@@ -1,0 +1,63 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x]
+        python-version: [3.8]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install Python dependencies
+      run: |
+        pip install -r flask-backend/requirements.txt
+
+    - name: Run Flask tests
+      run: |
+        # add your test commands here
+        # pytest
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Install Node dependencies and Build React App
+      run: |
+        cd react-frontend
+        npm install
+        npm run build
+
+    - name: Deploy to AWS EC2
+      uses: easingthemes/ssh-deploy@v2.1.5
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        SOURCE: "./react-frontend/build/"
+        REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+        REMOTE_USER: ${{ secrets.REMOTE_USER }}
+        TARGET: "/var/www/html/react-frontend"
+
+    - name: Restart Flask App on AWS EC2
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.REMOTE_HOST }}
+        username: ${{ secrets.REMOTE_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          cd flask-backend
+          git pull
+          sudo systemctl restart flask.service

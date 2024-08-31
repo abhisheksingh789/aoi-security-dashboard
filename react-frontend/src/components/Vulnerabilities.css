@@ -1,0 +1,30 @@
+/* Horizontal scroll with two rows */
+.horizontal-scroll {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 300px); /* Set the width of each card */
+    grid-auto-rows: 200px; /* Fixed height for each card */
+    grid-template-rows: repeat(2, 1fr); /* Create two rows */
+    gap: 1rem;
+    justify-content: start; /* Align items to the start */
+    padding: 0 2rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+  }
+  
+  /* Hide the scrollbar */
+  .horizontal-scroll::-webkit-scrollbar {
+    display: none; /* For Chrome, Safari, and Opera */
+  }
+  
+  .horizontal-scroll {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  
+  /* Additional Styling */
+  .card-item {
+    scroll-snap-align: start;
+    display: flex;
+    justify-content: center;
+  }
+  
