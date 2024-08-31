@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: CI/CD Pipeline for Flask and React
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build-and-test:
+  build-and-deploy:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -15,7 +15,8 @@ jobs:
         python-version: [3.8]
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
     - name: Set up Python
       uses: actions/setup-python@v2
@@ -26,38 +27,48 @@ jobs:
       run: |
         pip install -r flask-backend/requirements.txt
 
-    - name: Run Flask tests
+    - name: Test Flask application
       run: |
-        # add your test commands here
-        # pytest
+        # Add your Flask test commands here, e.g., pytest
+        echo "Running Flask tests..."
 
     - name: Set up Node.js
       uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
 
-    - name: Install Node dependencies and Build React App
+    - name: Install Node dependencies and build React app
       run: |
         cd react-frontend
         npm install
         npm run build
 
-    - name: Deploy to AWS EC2
+    - name: Deploy React frontend to AWS EC2
       uses: easingthemes/ssh-deploy@v2.1.5
       env:
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        SOURCE: "./react-frontend/build/"
         REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
         REMOTE_USER: ${{ secrets.REMOTE_USER }}
+        SOURCE: "react-frontend/build/"
         TARGET: "/var/www/html/react-frontend"
 
-    - name: Restart Flask App on AWS EC2
+    - name: Deploy Flask backend to AWS EC2
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.REMOTE_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          cd flask-backend
-          git pull
+          cd /var/www/html
+          # Pull the latest changes for the Flask app
+          sudo git pull origin main
+          # Install any new dependencies
+          sudo pip install -r flask-backend/requirements.txt
+          # Restart the Flask application using the appropriate command
+          # Assuming you are using gunicorn or similar WSGI server
           sudo systemctl restart flask.service
+
+    - name: Clean up post-deployment
+      run: |
+        echo "Deployment completed successfully."
+
