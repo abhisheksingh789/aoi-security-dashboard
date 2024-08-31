@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [14.x]
+        node-version: [18.x]  # Updated to a compatible version
         python-version: [3.8]
 
     steps:
@@ -29,7 +29,6 @@ jobs:
 
     - name: Test Flask application
       run: |
-        # Add your Flask test commands here, e.g., pytest
         echo "Running Flask tests..."
 
     - name: Set up Node.js
@@ -60,15 +59,10 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           cd /var/www/html
-          # Pull the latest changes for the Flask app
           sudo git pull origin main
-          # Install any new dependencies
           sudo pip install -r flask-backend/requirements.txt
-          # Restart the Flask application using the appropriate command
-          # Assuming you are using gunicorn or similar WSGI server
           sudo systemctl restart flask.service
 
     - name: Clean up post-deployment
       run: |
         echo "Deployment completed successfully."
-
