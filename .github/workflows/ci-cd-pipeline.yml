@@ -109,6 +109,7 @@ jobs:
           cd /var/www/html/testing3/flask-backend
           sudo chown -R ec2-user:ec2-user /var/www/html/testing3/flask-backend
           sudo pip install -r requirements.txt
+          nohup python3 app.py > backend-flask.log 2>&1 &
           # sudo systemctl restart flask.service
 
     - name: Clean up post-deployment
