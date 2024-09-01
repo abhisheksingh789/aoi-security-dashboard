@@ -74,6 +74,7 @@ jobs:
           
           sudo systemctl stop flask.service
           sudo systemctl stop react-frontend.service
+          sudo systemctl stop scanner.service
 
           if [ -d "testing3" ]; then
             echo "Repository already exists. Deleting the existing directory."
@@ -88,6 +89,18 @@ jobs:
           sudo chown ec2-user:ec2-user baseURL.js
           sed -i "s|const BASE_URL = .*;|const BASE_URL = \"http://${{ secrets.REMOTE_HOST }}:5001\";|g" baseURL.js
           echo "Updated baseURL.js with REMOTE_HOST"
+   
+    - name: Start  scanner server on AWS EC2
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.REMOTE_HOST }}
+        username: ${{ secrets.REMOTE_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          cd /var/www/html/testing3/scanner
+          sudo chown -R ec2-user:ec2-user /var/www/html/testing3/scanner
+          sudo pip install -r requirements.txt    
+          sudo systemctl start scanner.service
 
 
     - name: Deploy Flask backend to AWS EC2

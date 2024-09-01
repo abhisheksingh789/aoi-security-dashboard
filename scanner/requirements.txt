@@ -1,0 +1,14 @@
+Flask
+Flask-Cors
+gunicorn
+watchdog
+mysql-connector-python
+requests
+importlib-metadata
+blinker
+click
+colorama
+itsdangerous
+Jinja2
+MarkupSafe
+Werkzeug
