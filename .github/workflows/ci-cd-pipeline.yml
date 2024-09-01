@@ -42,13 +42,16 @@ jobs:
         cd react-frontend
         npm install
 
-    - name: Start React development server on AWS EC2
-      uses: appleboy/ssh-action@master
+    - name: clone this repo into the aws ec2
       with:
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.REMOTE_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
+          cd /var/www/html
+          sudo yum install -y python3-pip
+          sudo yum update -y
+          sudo yum install git -y
           curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
           # Load nvm
           export NVM_DIR="$HOME/.nvm"
@@ -65,8 +68,20 @@ jobs:
           node -v
           npm -v
 
+          git clone https://github.com/abhisheksingh789/testing3.git
+
+
+
+    - name: Start React development server on AWS EC2
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.REMOTE_HOST }}
+        username: ${{ secrets.REMOTE_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
           cd /var/www/html/react-frontend
-          npm uninstall
+          rm -rf node_modules
+
           npm install
           nohup npm run dev > frontend-react.log 2>&1 &
 
@@ -77,10 +92,8 @@ jobs:
         username: ${{ secrets.REMOTE_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          sudo yum install -y python3-pip
-          cd /var/www/html
-          sudo git pull origin main
-          sudo pip install -r flask-backend/requirements.txt
+          cd /var/www/html/flask-backend
+          sudo pip install -r requirements.txt
           sudo systemctl restart flask.service
 
     - name: Clean up post-deployment
