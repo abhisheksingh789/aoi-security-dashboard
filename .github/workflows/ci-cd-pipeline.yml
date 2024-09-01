@@ -25,7 +25,7 @@ jobs:
 
     - name: Install Python dependencies
       run: |
-        sudo yum install -y python3-pip
+        
         pip install -r flask-backend/requirements.txt
 
     - name: Test Flask application
