@@ -50,7 +50,11 @@ jobs:
         else
           echo "build-dir-exists=false" >> $GITHUB_ENV
         fi
-    
+
+    - name: Debug build-dir-exists value
+      run: | 
+       echo "Build directory exists: ${{ env.build-dir-exists }}"
+      
     
     - name: Deploy React frontend to AWS EC2
       uses: easingthemes/ssh-deploy@v2.1.5
