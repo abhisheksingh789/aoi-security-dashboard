@@ -2,17 +2,17 @@ name: CI/CD Pipeline for Flask and React
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [18.x]  # Updated to a compatible version
-        python-version: [3.8]
+        node-version: [18.x]  # Node version updated to be compatible with your dependencies
+        python-version: [3.8]  # Python version
 
     steps:
     - name: Checkout code
@@ -41,9 +41,20 @@ jobs:
         cd react-frontend
         npm install
         npm run build
+      id: build  # Added an ID for referring to the build step
+
+    - name: Check build directory exists
+      id: check-build
+      run: |
+        if [ -d react-frontend/build ]; then
+          echo "::set-output name=build-dir-exists::true"
+        else
+          echo "::set-output name=build-dir-exists::false"
+        fi
 
     - name: Deploy React frontend to AWS EC2
       uses: easingthemes/ssh-deploy@v2.1.5
+      if: steps.check-build.outputs.build-dir-exists == 'true'  # Conditional step based on the build directory existence
       env:
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
