@@ -33,20 +33,20 @@ jobs:
 
     - name: Run unit tests
       run: |
-         cd hosting/flask-backend/tests
+         cd flask-backend/tests
          pytest test_app.py
       continue-on-error: false  # This will cause the workflow to fail if any test fails 
       
     - name: Run vulnerability_Tests_module
       run: |
-        cd hosting/scanner/tests_vulnerability_module
+        cd scanner/tests_vulnerability_module
         pytest unit_testing.py
       continue-on-error: false
 
 
     - name: run list_api_module_test  
       run: |
-        cd hosting/scanner/test_scanner_module
+        cd scanner/test_scanner_module
         pytest test_list_api.py
       continue-on-error: false
 
