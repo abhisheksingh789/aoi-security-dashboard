@@ -81,6 +81,11 @@ jobs:
 
           sudo git clone https://github.com/abhisheksingh789/testing3.git
           sudo chown -R ec2-user:ec2-user /var/www/html/testing3
+          
+          cd /var/www/html/testing3/react-frontend/src/components
+          sudo chown ec2-user:ec2-user baseURL.js
+          sed -i "s|const BASE_URL = .*;|const BASE_URL = \"http://${{ secrets.REMOTE_HOST }}:5001\";|g" baseURL.js
+          echo "Updated baseURL.js with REMOTE_HOST"
 
 
 
@@ -96,6 +101,7 @@ jobs:
           
           
           sudo chown -R ec2-user:ec2-user /var/www/html/testing3/react-frontend
+
           npm install 
           nohup npm run dev > frontend-react.log 2>&1 &
 
