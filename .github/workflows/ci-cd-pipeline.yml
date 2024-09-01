@@ -25,6 +25,7 @@ jobs:
 
     - name: Install Python dependencies
       run: |
+        sudo yum install -y python3-pip
         pip install -r flask-backend/requirements.txt
 
     - name: Test Flask application
@@ -40,31 +41,39 @@ jobs:
       run: |
         cd react-frontend
         npm install
-        npm run build
-      id: build  # Added an ID for referring to the build step
-
-    - name: Check build directory exists
-      run: |
-        if [ -d react-frontend/build ]; then
-          echo "build-dir-exists=true" >> $GITHUB_ENV
-        else
-          echo "build-dir-exists=false" >> $GITHUB_ENV
-        fi
-
-    - name: Debug build-dir-exists value
-      run: | 
-       echo "Build directory exists: ${{ env.build-dir-exists }}"
+        
       
+  
+
+
     
-    - name: Deploy React frontend to AWS EC2
-      uses: easingthemes/ssh-deploy@v2.1.5
-      if: env.build-dir-exists == 'true'
-      env:
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
-        REMOTE_USER: ${{ secrets.REMOTE_USER }}
-        SOURCE: "react-frontend/build/"
-        TARGET: "/var/www/html/react-frontend"
+    - name: Start React development server on AWS EC2
+    uses: appleboy/ssh-action@master
+    with:
+      host: ${{ secrets.REMOTE_HOST }}
+      username: ${{ secrets.REMOTE_USER }}
+      key: ${{ secrets.SSH_PRIVATE_KEY }}
+      script: |
+          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
+          # Load nvm
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+          [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+          # Install the latest LTS version of Node.js
+          nvm install --lts
+
+          # Use the installed version
+          nvm use --lts
+
+          # Verify installation
+          node -v
+          npm -v
+
+          cd /var/www/html/react-frontend
+          npm uninstall
+          npm install
+          nohup npm run dev > frontend-react.log 2>&1 &
 
     - name: Deploy Flask backend to AWS EC2
       uses: appleboy/ssh-action@master
@@ -73,6 +82,8 @@ jobs:
         username: ${{ secrets.REMOTE_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
+          
+          sudo yum install -y python3-pip
           cd /var/www/html
           sudo git pull origin main
           sudo pip install -r flask-backend/requirements.txt
