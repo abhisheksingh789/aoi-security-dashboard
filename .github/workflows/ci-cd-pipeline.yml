@@ -43,6 +43,7 @@ jobs:
         npm install
 
     - name: clone this repo into the aws ec2
+      uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.REMOTE_USER }}
