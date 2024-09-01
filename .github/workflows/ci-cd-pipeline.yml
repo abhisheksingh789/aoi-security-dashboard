@@ -73,13 +73,15 @@ jobs:
           # Verify installation
           node -v
           npm -v
+          
+          sudo systemctl stop flask.service
+          sudo systemctl stop react-frontend.service
 
           if [ -d "testing3" ]; then
             echo "Repository already exists. Deleting the existing directory."
             sudo rm -rf testing3 
           fi
-          sudo systemctl stop flask.service
-          sudo systemctl stop react-frontend.service
+          
           sudo git clone https://github.com/abhisheksingh789/testing3.git
 
           sudo chown -R ec2-user:ec2-user /var/www/html/testing3
