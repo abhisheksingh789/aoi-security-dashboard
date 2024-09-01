@@ -132,4 +132,4 @@ jobs:
 
     - name: Clean up post-deployment
       run: |
-        echo "Deployment completed ."
+        echo "Deployment completed successfully."
