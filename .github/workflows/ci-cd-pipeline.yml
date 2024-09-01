@@ -70,9 +70,7 @@ jobs:
           # Use the installed version
           nvm use --lts
 
-          # Verify installation
-          node -v
-          npm -v
+         
           
           sudo systemctl stop flask.service
           sudo systemctl stop react-frontend.service
