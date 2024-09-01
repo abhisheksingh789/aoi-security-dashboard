@@ -47,11 +47,11 @@ jobs:
       id: check-build
       run: |
         if [ -d react-frontend/build ]; then
-          echo "::set-output name=build-dir-exists::true"
+          echo "build-dir-exists=true" >> $GITHUB_ENV
         else
-          echo "::set-output name=build-dir-exists::false"
+          echo "build-dir-exists=false" >> $GITHUB_ENV
         fi
-
+    
         - name: Deploy React frontend to AWS EC2
           uses: easingthemes/ssh-deploy@v2.1.5
           if: steps.check-build.outputs.build-dir-exists == 'true'  # Conditional step based on the build directory existence
