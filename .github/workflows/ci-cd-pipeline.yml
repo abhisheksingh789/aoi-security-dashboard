@@ -52,15 +52,15 @@ jobs:
           echo "::set-output name=build-dir-exists::false"
         fi
 
-    - name: Deploy React frontend to AWS EC2
-      uses: easingthemes/ssh-deploy@v2.1.5
-      if: steps.check-build.outputs.build-dir-exists == 'true'  # Conditional step based on the build directory existence
-      env:
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
-        REMOTE_USER: ${{ secrets.REMOTE_USER }}
-        SOURCE: "react-frontend/build/"
-        TARGET: "/var/www/html/react-frontend"
+        - name: Deploy React frontend to AWS EC2
+          uses: easingthemes/ssh-deploy@v2.1.5
+          if: steps.check-build.outputs.build-dir-exists == 'true'  # Conditional step based on the build directory existence
+          env:
+            SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+            REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+            REMOTE_USER: ${{ secrets.REMOTE_USER }}
+            SOURCE: "react-frontend/build/"
+            TARGET: "/var/www/html/react-frontend"
 
     - name: Deploy Flask backend to AWS EC2
       uses: appleboy/ssh-action@master
