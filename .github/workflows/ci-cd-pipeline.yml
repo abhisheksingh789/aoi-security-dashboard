@@ -74,7 +74,13 @@ jobs:
           node -v
           npm -v
 
+          if [ -d "testing3" ]; then
+            echo "Repository already exists. Deleting the existing directory."
+            sudo rm -rf testing3
+          fi
+
           sudo git clone https://github.com/abhisheksingh789/testing3.git
+
 
 
 
@@ -86,7 +92,7 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           cd /var/www/html/testing3/react-frontend
-          rm -rf node_modules
+          
 
           npm install
           nohup npm run dev > frontend-react.log 2>&1 &
