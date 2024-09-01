@@ -88,23 +88,23 @@ jobs:
           echo "Updated baseURL.js with REMOTE_HOST"
 
 
-
-
-    - name: Start React development server on AWS EC2
+    - name: Stop React frontend service
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.REMOTE_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          cd /var/www/html/testing3/react-frontend
-          
-          
-          sudo chown -R ec2-user:ec2-user /var/www/html/testing3/react-frontend
+          sudo systemctl stop react-frontend.service
 
-          npm install 
-          nohup npm run dev > frontend-react.log 2>&1 &
-          sudo systemctl restart react-frontend.service
+    - name: Stop Flask backend service
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.REMOTE_HOST }}
+        username: ${{ secrets.REMOTE_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          sudo systemctl stop flask.service
 
     - name: Deploy Flask backend to AWS EC2
       uses: appleboy/ssh-action@master
@@ -116,8 +116,22 @@ jobs:
           cd /var/www/html/testing3/flask-backend
           sudo chown -R ec2-user:ec2-user /var/www/html/testing3/flask-backend
           sudo pip install -r requirements.txt
-          # nohup python3 app.py > backend-flask.log 2>&1 &
-          sudo systemctl restart flask.service
+          sudo systemctl start flask.service
+
+
+    - name: Start React development server on AWS EC2
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.REMOTE_HOST }}
+        username: ${{ secrets.REMOTE_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          cd /var/www/html/testing3/react-frontend
+          sudo chown -R ec2-user:ec2-user /var/www/html/testing3/react-frontend
+          npm install 
+          sudo systemctl start react-frontend.service
+
+    
 
     - name: Clean up post-deployment
       run: |
