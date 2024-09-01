@@ -50,7 +50,7 @@ def test_list_routes_in_file(tmp_path, sample_code):
 
     routes = list_routes_in_file(test_file)
     
-    # Normalize the methods in the routes for comparison
+    
     for route in routes:
         route['methods'] = normalize_methods(route['methods'])
 
