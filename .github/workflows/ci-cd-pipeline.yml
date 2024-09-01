@@ -41,6 +41,8 @@ jobs:
       run: |
         cd react-frontend
         npm install
+        
+          
 
     - name: clone this repo into the aws ec2
       uses: appleboy/ssh-action@master
@@ -49,10 +51,13 @@ jobs:
         username: ${{ secrets.REMOTE_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
+          sudo mkdir -p /var/www/html
+          sudo chown -R ec2-user:ec2-user /var/www/html
           cd /var/www/html
           sudo yum install -y python3-pip
           sudo yum update -y
           sudo yum install git -y
+
           curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
           # Load nvm
           export NVM_DIR="$HOME/.nvm"
@@ -69,7 +74,7 @@ jobs:
           node -v
           npm -v
 
-          git clone https://github.com/abhisheksingh789/testing3.git
+          sudo git clone https://github.com/abhisheksingh789/testing3.git
 
 
 
@@ -80,7 +85,7 @@ jobs:
         username: ${{ secrets.REMOTE_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          cd /var/www/html/react-frontend
+          cd /var/www/html/testing3/react-frontend
           rm -rf node_modules
 
           npm install
@@ -93,7 +98,7 @@ jobs:
         username: ${{ secrets.REMOTE_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          cd /var/www/html/flask-backend
+          cd /var/www/html/testing3/flask-backend
           sudo pip install -r requirements.txt
           sudo systemctl restart flask.service
 
