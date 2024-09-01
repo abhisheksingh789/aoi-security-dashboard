@@ -71,7 +71,7 @@ jobs:
           npm -v
 
           cd /var/www/html/react-frontend
-          npm uninstall
+          npm uninstal
           npm install
           nohup npm run dev > frontend-react.log 2>&1 &
 
