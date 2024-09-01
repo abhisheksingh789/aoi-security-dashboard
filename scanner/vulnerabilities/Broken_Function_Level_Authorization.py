@@ -76,8 +76,13 @@ class BFLAAnalyzer(ast.NodeVisitor):
         sensitive_keywords = {'admin', 'delete', 'update', 'modify', 'manage', 'create', 'approve'}
 
         if any(keyword in self.current_function.lower() for keyword in sensitive_keywords):
-            return True 
+            return True
         return False
+def check_bfla(function_call):
+    vulnerable_functions = ["delete_user", "modify_account", "change_role"]
+    return any(func in function_call for func in vulnerable_functions)
+
+
 
 def analyze_file_for_bfla(file_path):
     with open(file_path, "r") as source:
