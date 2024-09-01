@@ -78,8 +78,10 @@ jobs:
             echo "Repository already exists. Deleting the existing directory."
             sudo rm -rf testing3 
           fi
-
+          sudo systemctl stop flask.service
+          sudo systemctl stop react-frontend.service
           sudo git clone https://github.com/abhisheksingh789/testing3.git
+          
           sudo chown -R ec2-user:ec2-user /var/www/html/testing3
 
           cd /var/www/html/testing3/react-frontend/src/components
@@ -87,24 +89,6 @@ jobs:
           sed -i "s|const BASE_URL = .*;|const BASE_URL = \"http://${{ secrets.REMOTE_HOST }}:5001\";|g" baseURL.js
           echo "Updated baseURL.js with REMOTE_HOST"
 
-
-    - name: Stop React frontend service
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.REMOTE_HOST }}
-        username: ${{ secrets.REMOTE_USER }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: |
-          sudo systemctl stop react-frontend.service
-
-    - name: Stop Flask backend service
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.REMOTE_HOST }}
-        username: ${{ secrets.REMOTE_USER }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: |
-          sudo systemctl stop flask.service
 
     - name: Deploy Flask backend to AWS EC2
       uses: appleboy/ssh-action@master
