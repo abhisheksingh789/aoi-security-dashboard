@@ -41,19 +41,14 @@ jobs:
       run: |
         cd react-frontend
         npm install
-        
-      
-  
 
-
-    
     - name: Start React development server on AWS EC2
-    uses: appleboy/ssh-action@master
-    with:
-      host: ${{ secrets.REMOTE_HOST }}
-      username: ${{ secrets.REMOTE_USER }}
-      key: ${{ secrets.SSH_PRIVATE_KEY }}
-      script: |
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.REMOTE_HOST }}
+        username: ${{ secrets.REMOTE_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
           curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
           # Load nvm
           export NVM_DIR="$HOME/.nvm"
@@ -71,7 +66,7 @@ jobs:
           npm -v
 
           cd /var/www/html/react-frontend
-          npm uninstal
+          npm uninstall
           npm install
           nohup npm run dev > frontend-react.log 2>&1 &
 
@@ -82,7 +77,6 @@ jobs:
         username: ${{ secrets.REMOTE_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          
           sudo yum install -y python3-pip
           cd /var/www/html
           sudo git pull origin main
