@@ -78,23 +78,23 @@ class BFLAAnalyzer(ast.NodeVisitor):
         if any(keyword in self.current_function.lower() for keyword in sensitive_keywords):
             return True
         return False
-# def check_bfla(function_call):
-#     vulnerable_functions = ["delete_user", "modify_account", "change_role"]
-#     return any(func in function_call for func in vulnerable_functions)
-
 def check_bfla(function_call):
-    """
-    Check if the function call is vulnerable to Broken Function Level Authorization.
+    vulnerable_functions = ["delete_user", "modify_account", "change_role"]
+    return any(func in function_call for func in vulnerable_functions)
 
-    Parameters:
-        function_call (str): The function call to analyze.
+# def check_bfla(function_call):
+#     """
+#     Check if the function call is vulnerable to Broken Function Level Authorization.
 
-    Returns:
-        bool: True if the function call might be vulnerable, False otherwise.
-    """
-    # Example: check if sensitive functions are called without proper checks
-    sensitive_functions = ["delete_user", "modify_account", "create_admin"]
-    return function_call in sensitive_functions
+#     Parameters:
+#         function_call (str): The function call to analyze.
+
+#     Returns:
+#         bool: True if the function call might be vulnerable, False otherwise.
+#     """
+#     # Example: check if sensitive functions are called without proper checks
+#     sensitive_functions = ["delete_user", "modify_account", "create_admin"]
+#     return function_call in sensitive_functions
 
 
 def analyze_file_for_bfla(file_path):

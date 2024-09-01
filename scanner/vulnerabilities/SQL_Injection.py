@@ -75,7 +75,19 @@ def check_sql_injection(query):
     ]
     return any(pattern.lower() in query.lower() for pattern in risky_patterns)
 
+# def check_sql_injection(query):
+#     """
+#     Check if the SQL query is potentially vulnerable to SQL injection.
 
+#     Parameters:
+#         query (str): The SQL query to analyze.
+
+#     Returns:
+#         bool: True if the query is vulnerable, False otherwise.
+#     """
+#     # Example: Check for common SQL injection patterns
+#     injection_patterns = ["'", ";", "--", " OR ", " AND "]
+#     return any(pattern in query for pattern in injection_patterns)
 
 # Now, when you write your tests, you can directly pass SQL strings:
 
