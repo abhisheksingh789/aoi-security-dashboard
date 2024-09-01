@@ -94,7 +94,7 @@ jobs:
           cd /var/www/html/testing3/react-frontend
           
 
-          npm install
+          sudo npm install
           nohup npm run dev > frontend-react.log 2>&1 &
 
     - name: Deploy Flask backend to AWS EC2
