@@ -81,7 +81,7 @@ jobs:
           sudo systemctl stop flask.service
           sudo systemctl stop react-frontend.service
           sudo git clone https://github.com/abhisheksingh789/testing3.git
-          
+
           sudo chown -R ec2-user:ec2-user /var/www/html/testing3
 
           cd /var/www/html/testing3/react-frontend/src/components
@@ -119,4 +119,4 @@ jobs:
 
     - name: Clean up post-deployment
       run: |
-        echo "Deployment completed successfully."
+        echo "Deployment completed ."
