@@ -58,6 +58,13 @@ def analyze_file_for_unrestricted_business_flow(file_path):
     analyzer.visit(tree)
     return analyzer.vulnerable_endpoints
 
+def check_unrestricted_business_flow(process_flow):
+    risky_flows = ["bypass_order_process", "unauthorized_access", "force_execute"]
+    return any(flow in process_flow for flow in risky_flows)
+
+
+
+
 # def main():
 #     file_path = '../e-commerce.py'
 #     vulnerabilities = analyze_file_for_unrestricted_business_flow(file_path)
